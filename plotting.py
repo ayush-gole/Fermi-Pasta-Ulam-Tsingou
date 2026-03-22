@@ -4,7 +4,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
 # 3D with Constant N
-df = pd.read_csv('C:\\Users\\ayush\\OneDrive\\Desktop\\_\\Codes\\CP 4 Lab\\C++\\Fermi-Pasta-Ulam-Tsingou\\FPUT_0.100000.csv')
+df = pd.read_csv('C:\\Users\\ayush\\OneDrive\\Desktop\\_\\Codes\\CP 4 Lab\\C++\\Fermi-Pasta-Ulam-Tsingou\\FPUT_1.000000.csv')
 # use "FPUT_1.000000.csv" for A = 0.1
 plt.plot(df['C_time'], df['ET1'], label = "Energy of mode 1")
 plt.plot(df['C_time'], df['ET2'], label = "Energy of mode 2")
@@ -86,10 +86,9 @@ plt.xlabel("Time")
 plt.ylabel("Recurance")
 plt.show()
 
-plt.figure(figsize=(15/2, 8/2))
-plt.plot(df['C_time'], df['R_time'])
-plt.xlim(0, 15000)
-
-plt.xlabel("Time")
-plt.ylabel("Recurance")
-plt.show()
+# plt.figure(figsize=(15/2, 8/2))
+# plt.plot(df['C_time'], df['R_time'])
+# plt.xlim(0, 15000)
+# plt.xlabel("Time")
+# plt.ylabel("Recurance")
+# plt.show()
