@@ -1,8 +1,8 @@
-# Fermi-Pasta-Ulam-Tsingou (FPUT) Problem Simulation
+# Fermi-Pasta-Ulam-Tsingou (FPUT) Simulation
 
-A numerical simulation of the **FPUT problem** — one of the most historically significant problems in computational physics. Implemented in C++ using **Velocity Verlet integration**, with Python-based visualization of normal mode dynamics and recurrence phenomena.
+Numerical simulation of the FPUT problem using **Velocity Verlet integration**, written in C++ with Python for visualization of mode dynamics and recurrence.
 
-The simulation reveals how energy, initially seeded into a single normal mode, fails to thermalize and instead **recurs periodically** — the famous FPUT recurrence paradox.
+Tracks how energy initially in a single normal mode evolves across all modes over time — and whether the system thermalizes or comes back to where it started.
 
 ---
 
@@ -10,44 +10,44 @@ The simulation reveals how energy, initially seeded into a single normal mode, f
 
 | Plot | Description |
 |------|-------------|
-| ![Energy Evolution](Energy_Evolution_of_First_Three_modes.png) | Energy exchange between first three normal modes over time |
+| ![Energy Evolution](Energy_Evolution_of_First_Three_modes.png) | Energy exchange between first three normal modes |
 | ![Normalized Mode Energy](Normalized_Mode_Energy_Distribution.png) | Heatmap of normalized energy across all 32 modes |
-| ![3D Energy Distribution](3D_Energy_Distribution.png) | 3D surface of energy distribution across modes and time |
-| ![R(t) Distribution](R_t__Distribution.png) | Recurrence function R(t) across all modes |
-| ![3D Recurrence](3D_Recurance_Distribution.png) | 3D surface of recurrence distribution |
-| ![Recurrence vs Time](Recurance_Vs_Time_measure.png) | Scalar recurrence R(t) showing periodic return to initial state |
+| ![3D Energy Distribution](3D_Energy_Distribution.png) | 3D view of energy distribution across modes and time |
+| ![R(t) Distribution](R_t__Distribution.png) | Recurrence function across all modes |
+| ![3D Recurrence](3D_Recurance_Distribution.png) | 3D surface of the recurrence distribution |
+| ![Recurrence vs Time](Recurance_Vs_Time_measure.png) | Scalar R(t) showing periodic return to initial state |
 
 ---
 
 ## Features
 
-- **Velocity Verlet integration** for accurate, symplectic time evolution
-- Normal mode decomposition using **discrete sine transform (DST)** basis
-- Tracks energy per normal mode Ek and total energy conservation
+- Velocity Verlet integration for accurate time evolution
+- Normal mode decomposition using discrete sine transform basis
+- Tracks energy per mode and total energy over time
 - Computes **recurrence function R(t)** — both scalar and per-mode
-- Outputs full time series to CSV for flexible post-processing
-- Configurable amplitude `A` (affects initial energy; CSV named accordingly)
+- Outputs full time series to CSV for easy post-processing
+- Output filename changes automatically based on amplitude `A`
 
 ---
 
 ## How to Run
 
-> Both files must be in the **same directory**.
+> Both files should be in the **same directory**
 
 **Step 1 — Compile and run the C++ simulation:**
 ```bash
 g++ -O2 -o FPUT FPUT.cpp
 ./FPUT
 ```
-This generates a CSV file named after the amplitude, e.g.:
+This generates a CSV named after the amplitude, for example:
 - `FPUT_0.100000.csv` for A = 0.1
 - `FPUT_1.000000.csv` for A = 1.0
 
 **Step 2 — Update the file path in `plotting.py`:**
 
-Change this line to point to your generated CSV:
+The script has a local path hardcoded, change this line to match your CSV:
 ```python
-df = pd.read_csv('FPUT_1.000000.csv')   # or FPUT_0.100000.csv
+df = pd.read_csv('FPUT_0.100000.csv')
 ```
 
 **Step 3 — Run the plotting script:**
@@ -57,7 +57,9 @@ python plotting.py
 
 ---
 
-## Parameters (in `FPUT.cpp`)
+## Parameters
+
+These are near the top of `FPUT.cpp`:
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
@@ -65,29 +67,23 @@ python plotting.py
 | `alpha` | 0.25 | Nonlinear coupling strength |
 | `dt` | 0.05 | Integration time step |
 | `maxT` | 50000 | Total simulation time |
-| `A` | 0.1 | Initial mode amplitude (also sets output filename) |
+| `A` | 0.1 | Initial amplitude (also sets output filename) |
 
 ---
 
 ## Tech Stack
 
-- **C++** — Velocity Verlet integrator, normal mode analysis, CSV output
-- **Python** — Data loading and visualization (`numpy`, `pandas`, `matplotlib`)
+- **C++** — Verlet integrator, normal mode analysis, CSV output
+- **Python** — Data loading and visualization with `numpy`, `pandas`, `matplotlib`
 
 ---
 
 ## Physics Background
 
-The **FPUT problem** was one of the first numerical experiments in physics (Fermi, Pasta, Ulam, Tsingou, 1955). A chain of *N* oscillators with a weak **nonlinear (quadratic) coupling**:
+The FPUT problem is one of the earliest numerical experiments in physics (Fermi, Pasta, Ulam, Tsingou — 1955). A chain of oscillators with weak nonlinear coupling was expected to thermalize — energy starting in mode 1 should gradually spread across all modes. Instead the system kept returning close to its initial state, which was a pretty unexpected result at the time.
 
-**aᵢ = (qᵢ₊₁ − 2qᵢ + qᵢ₋₁) + α[(qᵢ₊₁ − qᵢ)² − (qᵢ − qᵢ₋₁)²]**
-
-Energy is initialized entirely in the **first normal mode** (k=1). Classical statistical mechanics predicts energy should eventually **equipartition** across all modes (thermalize). Instead, the system exhibits **quasi-periodic recurrence** — energy flows to a few low modes and returns nearly completely to the initial state, never thermalizing.
-
-This unexpected result laid the groundwork for the discovery of **solitons** and the study of **chaos and integrability** in nonlinear systems.
-
-The **recurrence function R(t)** quantifies how close the system returns to its initial state in phase space:
+This behavior, now called FPUT recurrence, ended up being important for understanding solitons and the boundary between integrable and chaotic systems. The recurrence is measured using:
 
 **R(t) = Σₖ [Qₖ(t)Qₖ(0) + Pₖ(t)Pₖ(0)] / Σₖ [Qₖ(0)² + Pₖ(0)²]**
 
-R(t) = 1 means perfect recurrence to the initial configuration.
+R(t) = 1 means the system has fully returned to its initial state.
